@@ -7,9 +7,6 @@ import java.util.Date;
 
 @Data
 public class AadharOtpResponseDto {
-    private int statuscode;
-    private boolean status;
-    private String message;
     private Data data;
 
     @lombok.Data

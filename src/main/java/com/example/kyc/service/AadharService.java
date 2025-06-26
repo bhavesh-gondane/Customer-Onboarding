@@ -32,9 +32,9 @@ public class AadharService {
             throw new RuntimeException("Aadhar already exists");
         }
         AadharOtpRequestDTO requestDTO = new AadharOtpRequestDTO();
-        requestDTO.setId_number(aadhar);
+        requestDTO.setAadharNo(aadhar);
         AadharOtpResponseDto responseDto=aadharOtpClient.generateOtp(requestDTO);
-        log.info(responseDto.getMessage());
+//        log.info(responseDto.getMessage());
         if(responseDto.getData()==null){
             log.info("data is coming null");
 //            throw new RuntimeException("response data is null");
@@ -57,7 +57,8 @@ public class AadharService {
         saveDetails.setName(responseDTO.getData().getFullName());
         saveDetails.setDob(responseDTO.getData().getDob());
         saveDetails.setGender(responseDTO.getData().getGender());
-        saveDetails.setLast4Aadhar(responseDTO.getData().getAadhaarNumber().substring(8));
+//        saveDetails.setLast4Aadhar(responseDTO.getData().getAadhaarNumber().substring(8));
+        saveDetails.setLast4Aadhar(aadhar.substring(8));
         aadharRepository.save(saveDetails);
     }
 }

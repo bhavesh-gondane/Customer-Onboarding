@@ -14,9 +14,4 @@ public class KycApplication {
 		SpringApplication.run(KycApplication.class, args);
 	}
 
-	@Bean
-	public ModelMapper modelMapper(){
-		return new ModelMapper();
-	}
-
 }
