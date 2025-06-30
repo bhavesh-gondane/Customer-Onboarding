@@ -10,6 +10,7 @@ import com.example.kyc.repository.AadharRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,7 +27,7 @@ public class AadharService {
     Map<String,String> aadharClient= new HashMap<>();
 
     @Transactional
-    public void sendOtp(String aadhar){
+    public AadharOtpResponseDto sendOtp(String aadhar){
         String last4Digits=aadhar.substring(8);
         if(aadharRepository.existsByLast4Aadhar(last4Digits)){
             throw new RuntimeException("Aadhar already exists");
@@ -39,26 +40,29 @@ public class AadharService {
             log.info("data is coming null");
 //            throw new RuntimeException("response data is null");
         }
-        aadharClient.put(aadhar,responseDto.getData().getClientId());
+        aadharClient.put(responseDto.getData().getClientId(),aadhar);
+        return responseDto;
     }
 
     @Transactional
-    public void verifyOtp(String aadhar,String otp){
-        String clientId=aadharClient.get(aadhar);
-        if(clientId==null)
-            throw new RuntimeException("clientId is null");
-        OtpVerifyRequestDTO requestDTO=new OtpVerifyRequestDTO();
+    public ResponseEntity<?> verifyOtp(String clientId, String otp) {
+        String aadhar = aadharClient.get(clientId);
+        OtpVerifyRequestDTO requestDTO = new OtpVerifyRequestDTO();
         requestDTO.setOtp(otp);
         requestDTO.setClientId(clientId);
 
-        OtpVerifyResponseDTO responseDTO=aadharOtpClient.verifyOtp(requestDTO);
+        OtpVerifyResponseDTO responseDTO = aadharOtpClient.verifyOtp(requestDTO);
 
         AadharDetails saveDetails = new AadharDetails();
         saveDetails.setName(responseDTO.getData().getFullName());
         saveDetails.setDob(responseDTO.getData().getDob());
         saveDetails.setGender(responseDTO.getData().getGender());
-//        saveDetails.setLast4Aadhar(responseDTO.getData().getAadhaarNumber().substring(8));
-        saveDetails.setLast4Aadhar(aadhar.substring(8));
-        aadharRepository.save(saveDetails);
+        saveDetails.setLast4Aadhar(aadhar.substring(aadhar.length() - 4));
+
+        AadharDetails saved = aadharRepository.save(saveDetails);
+        aadharClient.remove(clientId);
+
+        return ResponseEntity.ok(saved);
     }
+
 }

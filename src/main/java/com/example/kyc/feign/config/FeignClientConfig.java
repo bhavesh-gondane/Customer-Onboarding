@@ -13,10 +13,6 @@ public class FeignClientConfig implements RequestInterceptor{
     @Value("${api.key}")
     private String apiKey;
 
-//    @Value("${api.auth-token}")
-//    private String authToken;
-
-
     @Override
     public void apply(RequestTemplate template){
         template.header("accept", "application/json");

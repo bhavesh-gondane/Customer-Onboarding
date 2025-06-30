@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class VerifyOtoRequestDto {
-    private String aadharNo;
+    private String clientId;
     private String otp;
 }

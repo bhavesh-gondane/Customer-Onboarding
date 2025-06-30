@@ -8,8 +8,8 @@ public class JwtUtil {
         return random;
     }
     private static long getTimestamp() {
-        long timestamp = Instant.now().getEpochSecond();
-        return timestamp;
+//        long timestamp = Instant.now().getEpochSecond();
+        return 300;
     }
 
     public static String getToken() {
